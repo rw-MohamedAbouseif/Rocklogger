@@ -14,7 +14,6 @@ import inspect
 class Rocklogger():
     def __init__(self, level='info'):
         self.logger = self.__setup_logger(self.__get_level(level))
-        return self.logger
     
     def __setup_logger(self, log_lvl):
         caller_dirname, caller_filename = self.__get_caller()
@@ -82,6 +81,6 @@ class Rocklogger():
         
 
 if __name__ == "__main__":
-    logger = Rocklogger(level='debug')
+    logger = Rocklogger(level='debug').get_logger()
     logger.debug('Hello Rocklogger!')
 
