@@ -8,7 +8,7 @@ setup(
   author = 'Mohamed Abouseif',                   # Type in your name
   author_email = 'mohamed.abouseif@rockwool.com',      # Type in your E-Mail
   url = 'https://github.com/rw-MohamedAbouseif/Rocklogger.git',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/rw-MohamedAbouseif/Rocklogger/archive/refs/tags/v0.1.0-alpha.tar.gz',    # I explain this later on
+  download_url = 'https://github.com/rw-MohamedAbouseif/Rocklogger/archive/refs/tags/v0.2.0-alpha.tar.gz',    # I explain this later on
   keywords = ['Logger', 'ROCKWOOL'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
       ],
