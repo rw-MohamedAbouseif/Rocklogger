@@ -14,6 +14,7 @@ import inspect
 class Rocklogger():
     def __init__(self, level='info'):
         self.logger = self.__setup_logger(self.__get_level(level))
+        return self.logger
     
     def __setup_logger(self, log_lvl):
         caller_dirname, caller_filename = self.__get_caller()
@@ -53,16 +54,16 @@ class Rocklogger():
         return levels.get(log_level_str.lower(), logging.INFO)
     
     def __get_caller(self):
-    for frame_info in inspect.stack():
-        module = inspect.getmodule(frame_info.frame)
-        if module and module.__name__ != __name__:
-            if module.__file__:
-                dir_name, file_name = os.path.split(module.__file__)
-                file_name = file_name.split('.')[0]
-                return dir_name, file_name
-            else:
-                return os.getcwd(), 'interactive_shell'
-    return os.getcwd(), 'unknown'
+        for frame_info in inspect.stack():
+            module = inspect.getmodule(frame_info.frame)
+            if module and module.__name__ != __name__:
+                if module.__file__:
+                    dir_name, file_name = os.path.split(module.__file__)
+                    file_name = file_name.split('.')[0]
+                    return dir_name, file_name
+                else:
+                    return os.getcwd(), 'interactive_shell'
+        return os.getcwd(), 'unknown'
     
     def get_logger(self):
         return self.logger
@@ -81,6 +82,6 @@ class Rocklogger():
         
 
 if __name__ == "__main__":
-    logger = Rocklogger().init(level='debug')
+    logger = Rocklogger(level='debug')
     logger.debug('Hello Rocklogger!')
 
