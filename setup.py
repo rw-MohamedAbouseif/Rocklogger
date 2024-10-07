@@ -3,13 +3,13 @@ from setuptools import setup, find_packages
 setup(
   name='Rocklogger',  # How you named your package folder (MyLib)
   packages=find_packages(),  # Automatically find packages
-  version='0.2',  # Start with a small number and increase it with every change you make
+  version='0.3',  # Start with a small number and increase it with every change you make
   license='MIT',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description='Rockwool logger',  # Give a short description about your library
   author='Mohamed Abouseif',  # Type in your name
   author_email='mohamed.abouseif@rockwool.com',  # Type in your E-Mail
   url='https://github.com/rw-MohamedAbouseif/Rocklogger.git',  # Provide either the link to your GitHub or to your website
-  download_url='https://github.com/rw-MohamedAbouseif/Rocklogger/archive/refs/tags/v0.2.0-alpha.tar.gz',  # Link to the specific release
+  download_url='https://github.com/rw-MohamedAbouseif/Rocklogger/archive/refs/tags/v0.3.0-alpha.tar.gz',  # Link to the specific release
   keywords=['Logger', 'ROCKWOOL'],  # Keywords that define your package best
   install_requires=[  # List dependencies here
       # e.g. 'requests', 'numpy',
