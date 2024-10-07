@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
   name='Rocklogger',  # How you named your package folder (MyLib)
   packages=find_packages(),  # Automatically find packages
-  version='0.1',  # Start with a small number and increase it with every change you make
+  version='0.2',  # Start with a small number and increase it with every change you make
   license='MIT',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description='Rockwool logger',  # Give a short description about your library
   author='Mohamed Abouseif',  # Type in your name
