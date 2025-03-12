@@ -1,3 +1,3 @@
-# Rocklogger
+# rocklogger
 ### Pypi
-https://pypi.org/project/Rocklogger/
+https://pypi.org/project/rocklogger/
