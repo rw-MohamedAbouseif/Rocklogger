@@ -1,6 +1,6 @@
 # rocklogger
 
-A simple and flexible logging utility for Python applications.
+A simple and flexible logging utility for Python applications with singleton pattern support.
 
 ### PyPI
 https://pypi.org/project/rocklogger/
@@ -18,9 +18,9 @@ pip install rocklogger
 ```python
 from rocklogger import Rocklogger
 
-# Initialize the logger
+# Initialize the logger using the singleton pattern
 # level can be 'info', 'debug', 'warning', or 'error'
-logger = Rocklogger(level='debug', use_date_in_filename=True).get_logger()
+logger = Rocklogger.get_instance(level='debug', use_date_in_filename=True).get_logger()
 
 # Log messages at different levels
 logger.debug('This is a debug message')
@@ -47,6 +47,50 @@ except Exception as e:
     logger.error(f"An error occurred: {e}", exc_info=True)
 ```
 
+### Singleton Pattern
+
+Rocklogger implements the singleton pattern, ensuring that only one logger instance exists across your application:
+
+```python
+# In your main script
+from rocklogger import Rocklogger
+logger = Rocklogger.get_instance(level='debug').get_logger()
+
+# In another module
+from rocklogger import Rocklogger
+# This will use the same instance created in the main script
+logger = Rocklogger.get_instance().get_logger()
+```
+
+Benefits:
+- Ensures consistent logging configuration across your application
+- Log files are named after the script that first created the logger
+- Prevents multiple log file handlers from being created
+
+#### Important Note About Process Isolation
+
+The singleton pattern works within a single Python process. When modules are imported within the same process, they will share the same logger instance:
+
+```python
+# main.py
+from rocklogger import Rocklogger
+logger = Rocklogger.get_instance(level='debug').get_logger()
+logger.info('Main script')
+
+import module_a  # Will use the same logger instance
+import module_b  # Will also use the same logger instance
+```
+
+However, if you run separate Python scripts as independent processes, each process will have its own singleton instance:
+
+```bash
+# These will create separate logger instances
+python script1.py
+python script2.py
+```
+
+For applications with multiple entry points, consider creating a central logging module that's imported by all other modules.
+
 ### Closing the Logger
 
 When you're done with the logger, you can close it (optional):
@@ -54,4 +98,12 @@ When you're done with the logger, you can close it (optional):
 ```python
 # This is automatically done when the Rocklogger instance is garbage collected
 logger.close()
+```
+
+### Resetting the Logger (for testing)
+
+If you need to reset the logger (mainly for testing purposes):
+
+```python
+Rocklogger.reset()
 ```

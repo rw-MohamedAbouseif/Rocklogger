@@ -15,12 +15,60 @@ import threading
 import time
 
 class Rocklogger():
+    _instance = None
+    _lock = threading.Lock()
+    _initialized = False
+    _caller_info = None
+    @classmethod
+    def get_instance(cls, level='info', use_date_in_filename=True):
+        """
+        Get or create the singleton instance of Rocklogger.
+        
+        Args:
+            level (str): Logging level ('info', 'debug', 'warning', 'error')
+            use_date_in_filename (bool): Whether to include date in log filename
+            
+        Returns:
+            Rocklogger: The singleton instance
+        """
+        with cls._lock:
+            if cls._instance is None:
+                # Store caller info from the script that first creates the logger
+                if cls._caller_info is None:
+                    for frame_info in inspect.stack():
+                        module = inspect.getmodule(frame_info.frame)
+                        if module and module.__name__ != __name__:
+                            if module.__file__:
+                                dir_name, file_name = os.path.split(module.__file__)
+                                file_name = file_name.split('.')[0]
+                                cls._caller_info = (dir_name, file_name)
+                                break
+                    if cls._caller_info is None:
+                        cls._caller_info = (os.getcwd(), 'unknown')
+                
+                # Add a visual separator between instances
+                separator = "#" * 80
+                print(f"\n{separator}")
+                print(f"Created new Rocklogger instance from {cls._caller_info[1]}")
+                print(f"{separator}\n")
+                
+                # Create the instance
+                cls._instance = cls(level, use_date_in_filename)
+            else:
+                print(f"Using existing Rocklogger instance (created from {cls._caller_info[1]})")
+        return cls._instance
+    
     def __init__(self, level='info', use_date_in_filename=True):
+        # Skip initialization if already initialized
+        if Rocklogger._initialized:
+            return
+            
         self.use_date_in_filename = use_date_in_filename
         self.current_date = datetime.datetime.now().strftime("%Y%m%d")
         self.logger = self.__setup_logger(self.__get_level(level))
         self.__setup_exception_logging()
         self.__start_date_check_thread()
+        Rocklogger._initialized = True
     
     def __setup_logger(self, log_lvl):
         caller_dirname, caller_filename = self.__get_caller()
@@ -71,6 +119,11 @@ class Rocklogger():
         return levels.get(log_level_str.lower(), logging.INFO)
     
     def __get_caller(self):
+        # Use the stored caller info from the script that first created the logger
+        if Rocklogger._caller_info:
+            return Rocklogger._caller_info
+            
+        # Fallback to the original implementation if _caller_info is not set
         for frame_info in inspect.stack():
             module = inspect.getmodule(frame_info.frame)
             if module and module.__name__ != __name__:
@@ -125,18 +178,33 @@ class Rocklogger():
         for handler in handlers:
             self.logger.removeHandler(handler)
             handler.close()
+        Rocklogger._initialized = False
+        Rocklogger._instance = None
             
     def __del__(self):
         self.close()
         
+    @classmethod
+    def reset(cls):
+        """Reset the singleton instance (mainly for testing purposes)"""
+        separator = "#" * 80
+        print(f"\n{separator}")
+        print("Resetting Rocklogger instance")
+        print(f"{separator}\n")
+        
+        if cls._instance:
+            cls._instance.close()
+        cls._instance = None
+        cls._initialized = False
+        cls._caller_info = None
 
 if __name__ == "__main__":
     # Initialize with date in filename
-    # logger = Rocklogger(level='debug', use_date_in_filename=True).get_logger()
+    # logger = Rocklogger.get_instance(level='debug', use_date_in_filename=True).get_logger()
     # logger.debug('This is a debug message.')
 
     # Initialize without date in filename
-    logger = Rocklogger(level='debug', use_date_in_filename=False).get_logger()
+    logger = Rocklogger.get_instance(level='debug', use_date_in_filename=False).get_logger()
     logger.debug('This is a debug message.')
 
     # Example code to trigger an uncaught exception
