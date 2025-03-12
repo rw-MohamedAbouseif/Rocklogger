@@ -1,20 +1,31 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 16 09:07:19 2022
-Updated on Fri Okt 04 12:21:20 2024
+# Example of how to use rocklogger
 
-@author: Mohamed
-"""
+# Import the Rocklogger class from the rocklogger package
+from rocklogger import Rocklogger
 
-from Rocklogger import Rocklogger
-# Initialize with date in filename
+# Initialize the logger
+# level can be 'info', 'debug', 'warning', or 'error'
+# use_date_in_filename determines if the date is included in the log filename
 logger = Rocklogger(level='debug', use_date_in_filename=True).get_logger()
-logger.debug('This is a debug message.')
 
-# Initialize without date in filename
-# logger = Rocklogger(level='debug', use_date_in_filename=False).get_logger()
-# logger.debug('This is a debug message.')
+# Log messages at different levels
+logger.debug('This is a debug message')
+logger.info('This is an info message')
+logger.warning('This is a warning message')
+logger.error('This is an error message')
 
-# Example code to trigger an uncaught exception
-print("This will be logged.")
-raise Exception("This is an uncaught exception!")
+# The logs will be saved in a 'logs' directory in the same location as this script
+# Two log files will be created:
+# 1. example_YYYYMMDD.log - Contains all log messages
+# 2. example_error_YYYYMMDD.log - Contains only error level messages
+
+# You can also use the logger in a try-except block to log exceptions
+try:
+    # Some code that might raise an exception
+    result = 10 / 0
+except Exception as e:
+    logger.error(f"An error occurred: {e}", exc_info=True)
+
+# When you're done with the logger, you can close it (optional)
+# This is automatically done when the Rocklogger instance is garbage collected
+# logger.close()
